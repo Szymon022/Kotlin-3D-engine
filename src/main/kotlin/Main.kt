@@ -1,11 +1,15 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.DpSize
@@ -23,23 +27,28 @@ fun Scene(bitmap: ImageBitmap, modifier: Modifier = Modifier) {
 }
 
 fun main() = application {
+    val viewModel = remember { MainViewModel() }
     Window(
         state = WindowState(
             size = DpSize(
-                (ViewModel.WIDTH + 200).dp,
-                ViewModel.HEIGHT.dp + 40.dp
+                (MainViewModel.WIDTH + 200).dp,
+                MainViewModel.HEIGHT.dp + 40.dp
             ),
         ),
-        onCloseRequest = ::exitApplication
-
+        onCloseRequest = {
+            viewModel.onClear()
+            exitApplication()
+        }
     ) {
         MaterialTheme {
-            val viewModel = remember { ViewModel() }
             val scene by viewModel.scene.collectAsState()
-            Scene(
-                modifier = Modifier.size(width = ViewModel.WIDTH.dp, height = ViewModel.HEIGHT.dp),
-                bitmap = scene
-            )
+            val isLoadingResources by viewModel.isLoadingResources.collectAsState()
+            Box(modifier = Modifier.size(width = MainViewModel.WIDTH.dp, height = MainViewModel.HEIGHT.dp)) {
+                Scene(modifier = Modifier.fillMaxSize(), bitmap = scene)
+                if (isLoadingResources) {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
+            }
         }
     }
 }
