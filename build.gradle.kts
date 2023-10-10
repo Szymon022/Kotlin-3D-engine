@@ -20,6 +20,11 @@ dependencies {
     // (in a separate module for demo project and in testMain).
     // With compose.desktop.common you will also lose @Preview functionality
     implementation(compose.desktop.currentOs)
+    testImplementation("io.kotest:kotest-runner-junit5:5.7.2")
+}
+
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
 }
 
 compose.desktop {
