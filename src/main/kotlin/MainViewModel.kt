@@ -8,7 +8,7 @@ import viewModel.ViewModel
 
 class MainViewModel : ViewModel() {
 
-    private val _scene = MutableSharedFlow<ImageBitmap>()
+    private val _scene = MutableSharedFlow<ImageBitmap>(replay = 1)
     val scene = _scene.asSharedFlow()
 
     private val _isLoadingResources = MutableStateFlow(false)
