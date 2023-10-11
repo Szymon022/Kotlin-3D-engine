@@ -1,16 +1,15 @@
 import androidx.compose.ui.graphics.ImageBitmap
 import data.Model
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import draw.drawModelMesh
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import obj.parseObj
 import viewModel.ViewModel
 
 class MainViewModel : ViewModel() {
 
-    private val _scene = MutableStateFlow(initialScene())
-    val scene = _scene.asStateFlow()
+    private val _scene = MutableSharedFlow<ImageBitmap>()
+    val scene = _scene.asSharedFlow()
 
     private val _isLoadingResources = MutableStateFlow(false)
     val isLoadingResources = _isLoadingResources.asStateFlow()
@@ -22,10 +21,18 @@ class MainViewModel : ViewModel() {
             _isLoadingResources.update { true }
             model.update { parseObj("D:\\IdeaProjects\\Engine3D\\src\\main\\resources\\models\\sphere.obj") }
             _isLoadingResources.update { false }
+
+            drawModelMesh(
+                width = WIDTH,
+                height = HEIGHT,
+                model = model.value!!
+            ).collect { bitmap ->
+                _scene.emit(bitmap)
+            }
         }
     }
 
-    private fun initialScene() = ImageBitmap(WIDTH, HEIGHT)
+    fun initialScene() = ImageBitmap(WIDTH, HEIGHT)
 
     companion object {
         const val WIDTH = 900

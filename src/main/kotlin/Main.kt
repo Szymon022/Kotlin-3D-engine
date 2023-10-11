@@ -41,7 +41,7 @@ fun main() = application {
         }
     ) {
         MaterialTheme {
-            val scene by viewModel.scene.collectAsState()
+            val scene by viewModel.scene.collectAsState(viewModel.initialScene())
             val isLoadingResources by viewModel.isLoadingResources.collectAsState()
             Box(modifier = Modifier.size(width = MainViewModel.WIDTH.dp, height = MainViewModel.HEIGHT.dp)) {
                 Scene(modifier = Modifier.fillMaxSize(), bitmap = scene)
