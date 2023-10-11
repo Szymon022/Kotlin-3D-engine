@@ -19,13 +19,13 @@ fun drawModelMesh(width: Int, height: Int, model: Model, color: Color = Color.Bl
     val scale = height / 2
     Canvas(image).apply {
         model.array.forEach {
-            drawFace(face = it.translateAndScale(scale), paint = paint)
+            drawFaceBorder(face = it.translateAndScale(scale), paint = paint)
         }
     }
     emit(image)
 }.flowOn(Dispatchers.Default)
 
-fun Canvas.drawFace(face: Face, paint: Paint) {
+fun Canvas.drawFaceBorder(face: Face, paint: Paint) {
     val (vertices, _) = face
     val size = vertices.size
     repeat(size) { i ->
