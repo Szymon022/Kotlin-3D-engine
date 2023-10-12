@@ -1,11 +1,17 @@
 package draw
 
 import androidx.compose.ui.graphics.Canvas
-import data.Edge
 import data.Face
-import data.toEdgeTable
+import data.Float3
 
 fun Canvas.drawFilledPolygon(face: Face) {
-    val edgeTable = face.toEdgeTable().also { it.sortByDescending(Edge::yMin) }
+    val vertices = face.vertices
+    val indexTable = vertices.createIndexTable()
+
 
 }
+
+fun Array<Float3>.createIndexTable() = mapIndexed { ordinal, v -> ordinal to v }
+    .sortedBy { (_, v) -> v.y }
+    .map { (index, _) -> index }
+    .toIntArray()
