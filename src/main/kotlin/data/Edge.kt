@@ -9,9 +9,10 @@ data class Edge(
     val overM: Float,
 )
 
-fun Face.toEdgeTable(): Array<Edge> {
+fun Face.toEdgeTable(): MutableList<Edge> {
     val size = vertices.size
-    return (0 until size).mapNotNull { i ->
+    val edgeTable = mutableListOf<Edge>()
+    repeat(size) { i ->
         val (x1, y1) = vertices[i % size]
         val (x2, y2) = vertices[(i + 1) % size]
         when {
@@ -19,12 +20,7 @@ fun Face.toEdgeTable(): Array<Edge> {
                 if (y1 < y2) {
                     Edge(yMin = y1, yMax = y2, x = x1, overM = 0f)
                 } else {
-                    Edge(
-                        yMin = y2,
-                        yMax = y2,
-                        x = x2,
-                        overM = 0f
-                    )
+                    Edge(yMin = y2, yMax = y2, x = x2, overM = 0f)
                 }
             }
 
@@ -32,8 +28,9 @@ fun Face.toEdgeTable(): Array<Edge> {
             y1 > y2 -> Edge(yMin = y2, yMax = y1, x = x2, overM = 1 / slope(x1 = x1, x2 = x2, y1 = y1, y2 = y2))
             y1 < y2 -> Edge(yMin = y1, yMax = y2, x = x1, overM = 1 / slope(x1 = x1, x2 = x2, y1 = y1, y2 = y2))
             else -> null
-        }
-    }.toTypedArray()
+        }?.let { edgeTable.add(it) }
+    }
+    return edgeTable
 }
 
 fun slope(x1: Float, x2: Float, y1: Float, y2: Float) = (y2 - y1) / (x2 - x1)
