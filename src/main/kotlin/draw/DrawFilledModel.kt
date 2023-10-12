@@ -12,10 +12,10 @@ import kotlinx.coroutines.flow.*
 import kotlin.system.measureTimeMillis
 
 @OptIn(ExperimentalCoroutinesApi::class)
-fun drawFilledModel(width: Int, height: Int, model: Model): Flow<ImageBitmap> = flow {
+fun drawFilledModel(width: Int, height: Int, model: Model, color: Color): Flow<ImageBitmap> = flow {
     measureTimeMillis {
         val image = ImageBitmap(width = width, height = height)
-        val paint = Paint().apply { color = Color.Blue }
+        val paint = Paint().apply { this.color = color }
         val scale = height / 2
         Canvas(image).apply {
             model.array.asFlow().flatMapMerge(concurrency = 4) {
