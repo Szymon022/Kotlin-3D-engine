@@ -20,7 +20,7 @@ fun Face.toEdgeTable(): MutableList<Edge> {
                 if (y1 < y2) {
                     Edge(yMin = y1, yMax = y2, x = x1, overM = 0f)
                 } else {
-                    Edge(yMin = y2, yMax = y2, x = x2, overM = 0f)
+                    Edge(yMin = y2, yMax = y1, x = x2, overM = 0f)
                 }
             }
 
