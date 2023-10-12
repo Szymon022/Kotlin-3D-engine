@@ -15,26 +15,28 @@ fun Canvas.drawFilledPolygon(face: Face, paint: Paint) {
     while (!(edgeTable.isEmpty() && activeEdgeTable.isEmpty())) {
         edgeTable.moveToAET(activeEdgeTable, scanline)
         drawLine(activeEdgeTable, scanline, paint)
-        activeEdgeTable.removeIf { it.yMax <= scanline }
         scanline++
+        activeEdgeTable.removeIf { it.yMax < scanline }
         activeEdgeTable.updateEdges()
     }
 }
 
 fun MutableList<Edge>.moveToAET(aet: MutableList<Edge>, scanline: Float) {
+    val toRemove = mutableListOf<Edge>()
     for (edge in this) {
-        if (edge.yMin <= scanline) {
+        if (edge.yMin < scanline) {
             aet.add(edge)
-            remove(edge)
+            toRemove.add(edge)
         } else {
             break
         }
     }
+    toRemove.forEach(this::remove)
     aet.sortBy(Edge::x)
 }
 
 fun Canvas.drawLine(aet: MutableList<Edge>, scanline: Float, paint: Paint) {
-    for (i in 0 until aet.size step 2) {
+    for (i in 0 until aet.size - 1 step 2) {
         val e1 = aet[i]
         val e2 = aet[i + 1]
         drawLine(
