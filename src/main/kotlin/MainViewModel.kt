@@ -1,6 +1,7 @@
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import data.Model
-import draw.drawModelMesh
+import draw.drawFilledModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import obj.parseObj
@@ -16,18 +17,25 @@ class MainViewModel : ViewModel() {
 
     private val model = MutableStateFlow<Model?>(null)
 
+    private val colors = List(1000000) {
+        Color(it * 100000000)
+    }
+
     init {
         viewModelScope.launch {
             _isLoadingResources.update { true }
             model.update { parseObj("D:\\IdeaProjects\\Engine3D\\src\\main\\resources\\models\\sphere.obj") }
             _isLoadingResources.update { false }
 
-            drawModelMesh(
-                width = WIDTH,
-                height = HEIGHT,
-                model = model.value!!
-            ).collect { bitmap ->
-                _scene.emit(bitmap)
+            colors.forEach {
+                drawFilledModel(
+                    width = WIDTH,
+                    height = HEIGHT,
+                    model = model.value!!,
+                    it
+                ).collect { bitmap ->
+                    _scene.emit(bitmap)
+                }
             }
         }
     }
