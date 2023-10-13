@@ -15,33 +15,33 @@ class VectorOperationsTest : FunSpec({
         test("Returns correct value for 2 non-orthogonal vectors") {
             val v = Float3(1f, 2f, 3f)
             val w = Float3(6f, 7f, 8f)
-            (v * w).shouldBe(44f plusOrMinus 1e-7f)
+            (v o w).shouldBe(44f plusOrMinus 1e-7f)
         }
 
         test("Dot product is commutative") {
             val v = Float3(1f, 2f, 3f)
             val w = Float3(6f, 7f, 8f)
-            val vw = v * w
-            val wv = w * v
+            val vw = v o w
+            val wv = w o v
             vw.shouldBe(wv plusOrMinus 1e-7f)
         }
 
         test("Returns 0 for 2 orthogonal vectors") {
             val v = Float3(1f, 0f, 0f)
             val w = Float3(0f, 1f, 0f)
-            (v * w).shouldBe(0f plusOrMinus 1e-7f)
+            (v o w).shouldBe(0f plusOrMinus 1e-7f)
         }
 
         test("Returns product of vectors lengths if vectors are parallel") {
             val v = Float3(3f, 0f, 0f)
             val w = Float3(6f, 0f, 0f)
-            (v * w).shouldBe(18f plusOrMinus 1e-7f)
+            (v o w).shouldBe(18f plusOrMinus 1e-7f)
         }
 
         test("Returns negative number if vector have opposite direction") {
             val v = Float3(-3f, 0f, 0f)
             val w = Float3(6f, 0f, 0f)
-            (v * w).shouldBe(-18f plusOrMinus 1e-7f)
+            (v o w).shouldBe(-18f plusOrMinus 1e-7f)
         }
     }
 
@@ -79,8 +79,8 @@ class VectorOperationsTest : FunSpec({
             val v = Float3(1f, 2f, 3f)
             val w = Float3(4f, 5f, 6f)
             val result = v x w
-            (result * v).shouldBe(0f plusOrMinus 1e-7f)
-            (result * w).shouldBe(0f plusOrMinus 1e-7f)
+            (result o v).shouldBe(0f plusOrMinus 1e-7f)
+            (result o w).shouldBe(0f plusOrMinus 1e-7f)
         }
     }
 })

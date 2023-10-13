@@ -12,4 +12,4 @@ infix fun Float3.x(w: Float3): Float3 {
     )
 }
 
-operator fun Float3.times(w: Float3) = x * w.x + y * w.y + z * w.z
+infix fun Float3.o(w: Float3) = x * w.x + y * w.y + z * w.z
