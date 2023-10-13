@@ -5,6 +5,7 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.floats.plusOrMinus
 import io.kotest.matchers.shouldBe
+import kotlin.math.sqrt
 
 class VectorOperationsTest : FunSpec({
 
@@ -81,6 +82,22 @@ class VectorOperationsTest : FunSpec({
             val result = v x w
             (result o v).shouldBe(0f plusOrMinus 1e-7f)
             (result o w).shouldBe(0f plusOrMinus 1e-7f)
+        }
+    }
+
+    context("Normalization") {
+
+        test("Correctly normalizes vector") {
+            val v = Float3(3f, 4f, 5f)
+            val normalized = v.normalize()
+            normalized.x.shouldBe(3f / sqrt(50f) plusOrMinus 1e-7f)
+            normalized.y.shouldBe(4f / sqrt(50f) plusOrMinus 1e-7f)
+            normalized.z.shouldBe(5f / sqrt(50f) plusOrMinus 1e-7f)
+        }
+
+        test("Length of normalized vector is 1") {
+            val v = Float3(3f, 4f, 5f)
+            v.normalize().length.shouldBe(1f plusOrMinus 1e-7f)
         }
     }
 })
