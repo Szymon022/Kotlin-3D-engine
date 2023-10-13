@@ -26,7 +26,7 @@ fun Scene(bitmap: ImageBitmap, modifier: Modifier = Modifier) {
     }
 }
 
-fun main() = application {
+fun main() = application adsv{
     val viewModel = remember { MainViewModel() }
     Window(
         state = WindowState(
