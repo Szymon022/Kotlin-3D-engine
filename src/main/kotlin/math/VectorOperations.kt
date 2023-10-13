@@ -13,3 +13,12 @@ infix fun Float3.x(w: Float3): Float3 {
 }
 
 infix fun Float3.o(w: Float3) = x * w.x + y * w.y + z * w.z
+
+fun Float3.normalize(): Float3 {
+    val length = this.length
+    return copy(
+        x = x / length,
+        y = y / length,
+        z = z / length,
+    )
+}
