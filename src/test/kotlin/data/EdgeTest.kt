@@ -65,5 +65,50 @@ class EdgeTest : FunSpec({
         }
     }
 
+    context("Edge table creation") {
+
+        test("Creates valid edge table") {
+            val face = Face(
+                vertices = arrayOf(
+                    Float3(x = 1f, y = 2f, z = 3f),
+                    Float3(x = 5f, y = 10f, z = 6f),
+                    Float3(x = 3f, y = 4f, z = 3f),
+                ),
+                normals = emptyArray()
+            )
+            val expected = listOf(
+                Edge(2f, 10f, 1f, 0.5f),
+                Edge(4f, 10f, 3f, 1f / 3f),
+                Edge(2f, 4f, 1f, 1f),
+            )
+            face.toEdgeTable().zip(expected).forEach { (e1, e2) ->
+                e1.yMin.shouldBe(e2.yMin)
+                e1.yMax.shouldBe(e2.yMax)
+                e1.x.shouldBe(e2.x)
+                e1.overM.shouldBe(e2.overM plusOrMinus 1e-7f)
+            }
+        }
+
+        test("Creates valid edge table when there is horizontal line") {
+            val face = Face(
+                vertices = arrayOf(
+                    Float3(x = 1f, y = 2f, z = 3f),
+                    Float3(x = 5f, y = 2f, z = 6f),
+                    Float3(x = 3f, y = 4f, z = 3f),
+                ),
+                normals = emptyArray()
+            )
+            val expected = listOf(
+                Edge(2f, 4f, 5f, -1f),
+                Edge(2f, 4f, 1f, 1f),
+            )
+            face.toEdgeTable().zip(expected).forEach { (e1, e2) ->
+                e1.yMin.shouldBe(e2.yMin)
+                e1.yMax.shouldBe(e2.yMax)
+                e1.x.shouldBe(e2.x)
+                e1.overM.shouldBe(e2.overM plusOrMinus 1e-7f)
+            }
+        }
+    }
 
 })
