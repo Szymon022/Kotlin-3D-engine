@@ -16,8 +16,8 @@ fun BufferedImage.drawTriangleGouraud(
     kd: Float,
     ks: Float,
     m: Int,
-    lightColor: Float3,
-    objColor: Float3,
+    lightColor: Color,
+    objColor: Color,
     light: Float3,
     observer: Float3,
 ) {

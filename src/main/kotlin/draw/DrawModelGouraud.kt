@@ -19,20 +19,8 @@ fun drawModelGouraud(width: Int, height: Int, model: Model, color: Color): Flow<
     measureTimeMillis {
         val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
         val scale = height / 2
-        val lightColor = Color.White.let {
-            Float3(
-                x = it.red,
-                y = it.green,
-                z = it.blue
-            )
-        }
-        val objColor = Color.Red.let {
-            Float3(
-                x = it.red,
-                y = it.green,
-                z = it.blue
-            )
-        }
+        val lightColor = Color.White
+        val objColor = Color.Red
         val observer = Float3(0f, 0f, 1f)
         val light = Float3(1f, 1f, 0f).normalize()
         model.array.asFlow().flatMapMerge(concurrency = 8) {
@@ -56,8 +44,8 @@ fun drawTriangleGouraudFlow(
     bitmap: BufferedImage,
     face: Face,
     scale: Int,
-    lightColor: Float3,
-    objColor: Float3,
+    lightColor: Color,
+    objColor: Color,
     light: Float3,
     observer: Float3,
     kd: Float = 1f,
