@@ -8,6 +8,7 @@ import data.Float3
 import data.toEdgeTable
 import draw.moveToAET
 import draw.updateEdges
+import math.normalize
 import java.awt.image.BufferedImage
 
 fun BufferedImage.drawTriangleGouraud(
@@ -30,7 +31,7 @@ fun BufferedImage.drawTriangleGouraud(
     val (x3, y3) = vertices[2]
     val divider = (y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3)
 
-    val normals = face.normals
+    val normals = face.normals.map { it.normalize() }
     val v1Color = lambert(kd, ks, m, lightColor, objColor, light, normals[0], observer)
     val v2Color = lambert(kd, ks, m, lightColor, objColor, light, normals[1], observer)
     val v3Color = lambert(kd, ks, m, lightColor, objColor, light, normals[2], observer)
@@ -52,7 +53,9 @@ fun BufferedImage.drawTriangleGouraud(
                 val w1 = ((y2 - y3) * commonXPart + (x3 - x2) * commonYPart) / divider
                 val w2 = ((y3 - y1) * commonXPart + (x1 - x3) * commonYPart) / divider
                 val w3 = 1 - w1 - w2
-                val interpolatedColor = v1Color * w1 + v2Color * w2 + v3Color * w3
+                val interpolatedColor = v1Color * w1.coerceAtLeast(0f) +
+                        v2Color * w2.coerceAtLeast(0f) +
+                        v3Color * w3.coerceAtLeast(0f)
 
                 setRGB(x, y, interpolatedColor.toArgb())
                 x++
