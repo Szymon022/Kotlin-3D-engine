@@ -9,6 +9,8 @@ import data.toEdgeTable
 import draw.moveToAET
 import draw.updateEdges
 import math.normalize
+import math.plus
+import math.times
 import java.awt.image.BufferedImage
 
 fun BufferedImage.drawTriangleGouraud(
@@ -67,15 +69,3 @@ fun BufferedImage.drawTriangleGouraud(
         activeEdgeTable.updateEdges()
     }
 }
-
-operator fun Color.times(x: Float) = Color(
-    red = red * x,
-    green = green * x,
-    blue = blue * x,
-)
-
-operator fun Color.plus(color: Color) = Color(
-    red = red + color.red,
-    green = green + color.green,
-    blue = blue + color.blue,
-)
