@@ -10,19 +10,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import light.drawTriangleGouraud
-import math.normalize
 import java.awt.image.BufferedImage
 import kotlin.system.measureTimeMillis
 
 @OptIn(ExperimentalCoroutinesApi::class)
-fun drawModelGouraud(width: Int, height: Int, model: Model, color: Color): Flow<ImageBitmap> = flow {
+fun drawModelGouraud(
+    width: Int,
+    height: Int,
+    model: Model,
+    lightColor: Color,
+    objColor: Color,
+    light: Float3,
+    observer: Float3
+): Flow<ImageBitmap> = flow {
     measureTimeMillis {
         val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
         val scale = height / 2
-        val lightColor = Color.White
-        val objColor = Color.Red
-        val observer = Float3(0f, 0f, 1f)
-        val light = Float3(1f, 1f, 0f).normalize()
         model.array.asFlow().flatMapMerge(concurrency = 8) {
             drawTriangleGouraudFlow(
                 bitmap = bufferedImage,
