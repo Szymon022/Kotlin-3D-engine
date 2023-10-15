@@ -54,7 +54,7 @@ fun drawTriangleGouraudFlow(
     kd: Float = 1f,
     ks: Float = 1f,
     m: Int = 10,
-) = flow<Unit> {
+) = flow {
 
     bitmap.drawTriangleGouraud(
         face = face.translateAndScale(scale),
@@ -66,5 +66,6 @@ fun drawTriangleGouraudFlow(
         light = light,
         observer = observer,
     )
+    emit(Unit)
 }
 
