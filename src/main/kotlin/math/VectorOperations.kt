@@ -22,3 +22,22 @@ fun Float3.normalize(): Float3 {
         z = z / length,
     )
 }
+
+operator fun Float.times(v: Float3): Float3 {
+    val (x, y, z) = v
+    return Float3(
+        x = x * this,
+        y = y * this,
+        z = z * this
+    )
+}
+
+operator fun Float3.minus(v: Float3): Float3 {
+    val (ux, uy, uz) = this
+    val (vx, vy, vz) = v
+    return Float3(
+        x = ux - vx,
+        y = uy - vy,
+        z = uz - vz
+    )
+}
