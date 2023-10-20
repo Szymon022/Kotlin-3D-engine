@@ -2,7 +2,9 @@ package light
 
 import androidx.compose.ui.graphics.Color
 import data.Float3
+import math.minus
 import math.o
+import math.times
 import kotlin.math.pow
 
 /**
@@ -18,16 +20,17 @@ fun lambert(
     kd: Float,
     ks: Float,
     m: Int,
-    lightColor: Float3,
-    objColor: Float3,
+    lightColor: Color,
+    objColor: Color,
     light: Float3,
     normal: Float3,
     observer: Float3
 ): Color {
     val (rLight, gLight, bLight) = lightColor
     val (rObj, gObj, bObj) = objColor
+    val reflection = 2 * (normal o light).coerceAtLeast(0f) * normal - light
     val commonPart = kd * (normal o light).coerceAtLeast(0f) +
-            ks * (observer o normal).coerceAtLeast(0f).pow(m)
+            ks * (observer o reflection).coerceAtLeast(0f).pow(m)
     return Color(
         // probably there will be coerceAtMost(1f) needed
         red = rLight * rObj * commonPart,
