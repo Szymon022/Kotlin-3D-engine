@@ -32,6 +32,16 @@ operator fun Float.times(v: Float3): Float3 {
     )
 }
 
+operator fun Float3.plus(v: Float3): Float3 {
+    val (ux, uy, uz) = this
+    val (vx, vy, vz) = v
+    return Float3(
+        x = ux + vx,
+        y = uy + vy,
+        z = uz + vz
+    )
+}
+
 operator fun Float3.minus(v: Float3): Float3 {
     val (ux, uy, uz) = this
     val (vx, vy, vz) = v
