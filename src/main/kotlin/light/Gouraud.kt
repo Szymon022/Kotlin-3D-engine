@@ -55,9 +55,7 @@ fun BufferedImage.drawTriangleGouraud(
                 val w1 = ((y2 - y3) * commonXPart + (x3 - x2) * commonYPart) / divider
                 val w2 = ((y3 - y1) * commonXPart + (x1 - x3) * commonYPart) / divider
                 val w3 = 1 - w1 - w2
-                val interpolatedColor = v1Color * w1.coerceAtLeast(0f) +
-                        v2Color * w2.coerceAtLeast(0f) +
-                        v3Color * w3.coerceAtLeast(0f)
+                val interpolatedColor = v1Color * w1 + v2Color * w2 + v3Color * w3
 
                 setRGB(x, y, interpolatedColor.toArgb())
                 x++
