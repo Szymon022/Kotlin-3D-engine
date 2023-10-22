@@ -58,3 +58,10 @@ fun translationMatrix(x: Float, y: Float, z: Float) = Matrix4x4(
     floatArrayOf(0f, 0f, 1f, z),
     floatArrayOf(0f, 0f, 0f, 1f),
 )
+
+fun scaleMatrix(factor: Float) = Matrix4x4(
+    floatArrayOf(factor, 0f, 0f, 0f),
+    floatArrayOf(0f, factor, 0f, 0f),
+    floatArrayOf(0f, 0f, factor, 0f),
+    floatArrayOf(0f, 0f, 0f, 1f),
+)
