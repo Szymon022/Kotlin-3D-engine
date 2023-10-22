@@ -51,3 +51,10 @@ fun zRotationMatrix(degrees: Float): Matrix4x4 {
         floatArrayOf(0f, 0f, 0f, 1f),
     )
 }
+
+fun translationMatrix(x: Float, y: Float, z: Float) = Matrix4x4(
+    floatArrayOf(1f, 0f, 0f, x),
+    floatArrayOf(0f, 1f, 0f, y),
+    floatArrayOf(0f, 0f, 1f, z),
+    floatArrayOf(0f, 0f, 0f, 1f),
+)
