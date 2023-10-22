@@ -1,16 +1,8 @@
 package culling
 
-class ZBuffer private constructor(
-    private val buffer: FloatArray,
-    val width: Int,
-    val height: Int,
-) {
+class ZBuffer(val width: Int, val height: Int) {
 
-    constructor(width: Int, height: Int) : this(
-        buffer = FloatArray(width * height) { Float.MAX_VALUE },
-        width = width,
-        height = height
-    )
+    private val buffer = FloatArray(width * height) { Float.MAX_VALUE }
 
     operator fun get(x: Int, y: Int) = buffer[x * width + y]
 
