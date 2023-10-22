@@ -33,8 +33,8 @@ fun lambert(
             ks * (observer o reflection).coerceAtLeast(0f).pow(m)
     return Color(
         // probably there will be coerceAtMost(1f) needed
-        red = rLight * rObj * commonPart,
-        blue = gLight * gObj * commonPart,
-        green = bLight * bObj * commonPart,
+        red = (rLight * rObj * commonPart).coerceIn(0f, 1f),
+        blue = (gLight * gObj * commonPart).coerceIn(0f, 1f),
+        green = (bLight * bObj * commonPart).coerceIn(0f, 1f),
     )
 }
