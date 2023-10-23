@@ -2,6 +2,7 @@ package data
 
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.math.tan
 
 @JvmInline
 value class Matrix4x4 private constructor(private val data: Array<FloatArray>) {
@@ -65,3 +66,17 @@ fun scaleMatrix(factor: Float) = Matrix4x4(
     floatArrayOf(0f, 0f, factor, 0f),
     floatArrayOf(0f, 0f, 0f, 1f),
 )
+
+fun projectionMatrix(width: Int, height: Int, fov: Float): Matrix4x4 {
+    val cx = width / 2f
+    val cy = height / 2f
+    val fovRadians = Math.toRadians(fov.toDouble() / 2.0).toFloat()
+    val s = cy / tan(fovRadians)
+
+    return Matrix4x4(
+        floatArrayOf(s, 0f, cx, 0f),
+        floatArrayOf(0f, s, cy, 0f),
+        floatArrayOf(0f, 0f, 0f, 1f),
+        floatArrayOf(0f, 0f, 1f, 0f),
+    )
+}
