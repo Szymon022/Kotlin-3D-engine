@@ -54,6 +54,13 @@ operator fun Float3.minus(v: Float3): Float3 {
     )
 }
 
+fun Float4.transform(m: Matrix) = Float4(
+    x = x * m[0, 0] + y * m[0, 1] + z * m[0, 2] + w * m[0, 3],
+    y = x * m[1, 0] + y * m[1, 1] + z * m[1, 2] + w * m[1, 3],
+    z = x * m[2, 0] + y * m[2, 1] + z * m[2, 2] + w * m[2, 3],
+    w = x * m[3, 0] + y * m[3, 1] + z * m[3, 2] + w * m[3, 3],
+)
+
 fun Float4.transformNormal(modelMatrix: Matrix): Float3 {
     val m = modelMatrix.clone().apply {
         invert()
