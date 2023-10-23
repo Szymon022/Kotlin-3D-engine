@@ -18,7 +18,7 @@ fun drawModelMesh(width: Int, height: Int, model: Model, color: Color = Color.Bl
     val paint = Paint().apply { this.color = color }
     val scale = height / 2
     Canvas(image).apply {
-        model.array.forEach {
+        model.faces.forEach {
             drawFaceBorder(face = it.translateAndScale(scale), paint = paint)
         }
     }

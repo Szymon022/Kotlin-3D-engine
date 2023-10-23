@@ -22,7 +22,7 @@ class ObjParserTest : FunSpec({
     test("parseObj should correctly parse Model from .obj file") {
         val model = parseObj(testModelPath)
         val expectedModel = Model(
-            array = arrayOf(
+            faces = arrayOf(
                 Face(
                     vertices = arrayOf(
                         Float3(0f, -0.55557f, 0.636835f),
@@ -49,7 +49,7 @@ class ObjParserTest : FunSpec({
                 )
             )
         )
-        model.array.zip(expectedModel.array).forEach { (actual, expected) ->
+        model.faces.zip(expectedModel.faces).forEach { (actual, expected) ->
             actual.shouldBe(expected)
         }
     }

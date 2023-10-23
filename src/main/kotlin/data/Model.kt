@@ -1,4 +1,4 @@
 package data
 
 @JvmInline
-value class Model(val array: Array<Face>)
+value class Model(val faces: Array<Face>)
