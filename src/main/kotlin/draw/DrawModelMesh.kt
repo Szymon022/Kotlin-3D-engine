@@ -6,7 +6,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Paint
 import data.Face
-import data.Float3
+import data.Float4
 import data.Model
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -40,14 +40,12 @@ fun Canvas.drawFaceBorder(face: Face, paint: Paint) {
 }
 
 fun Face.translateAndScale(scale: Int) = copy(
-    vertices = vertices.map { (x, y, z) ->
-        Float3(
+    vertices = vertices.map { (x, y, z, w) ->
+        Float4(
             x = (x + 1) * scale,
             y = (y + 1) * scale,
-            z = (z + 1) * scale
+            z = (z + 1) * scale,
+            w = w,
         )
     }.toTypedArray()
 )
-
-
-
