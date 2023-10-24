@@ -1,5 +1,6 @@
 package data
 
+import androidx.compose.ui.geometry.Offset
 import kotlin.math.abs
 
 data class Edge(
@@ -9,7 +10,7 @@ data class Edge(
     val overM: Float,
 )
 
-fun Edge(v1: Float3, v2: Float3): Edge? {
+fun Edge(v1: Offset, v2: Offset): Edge? {
     val (x1, y1) = v1
     val (x2, y2) = v2
     return when {
@@ -30,9 +31,10 @@ fun Edge(v1: Float3, v2: Float3): Edge? {
 
 fun Face.toEdgeTable(): MutableList<Edge> {
     val size = vertices.size
+    val offsets = vertices.map { Offset(x = it.x, y = it.y) }
     val edgeTable = mutableListOf<Edge>()
     repeat(size) { i ->
-        Edge(v1 = vertices[i % size], v2 = vertices[(i + 1) % size])?.let { edgeTable.add(it) }
+        Edge(v1 = offsets[i % size], v2 = offsets[(i + 1) % size])?.let { edgeTable.add(it) }
     }
     return edgeTable
 }

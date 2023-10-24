@@ -15,7 +15,7 @@ fun drawFilledModel(width: Int, height: Int, model: Model, color: Color): Flow<I
         val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
         val paint = Paint().apply { this.color = color }
         val scale = height / 2
-        model.array.asFlow().flatMapMerge(concurrency = 8) {
+        model.faces.asFlow().flatMapMerge(concurrency = 8) {
             drawFilledPolygonFlow(bufferedImage, it, scale, paint)
         }.flowOn(Dispatchers.Default).collect()
         emit(bufferedImage.toComposeImageBitmap())

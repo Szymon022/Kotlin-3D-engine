@@ -26,7 +26,7 @@ fun drawModelPhong(
     measureTimeMillis {
         val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
         val scale = height / 2
-        model.array.asFlow().flatMapMerge(concurrency = 8) {
+        model.faces.asFlow().flatMapMerge(concurrency = 8) {
             drawTrianglePhongFlow(
                 bitmap = bufferedImage,
                 face = it,

@@ -2,18 +2,19 @@ package obj
 
 import data.Face
 import data.Float3
+import data.Float4
 import data.Model
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
 suspend fun parseObj(path: String): Model = withContext(Dispatchers.IO) {
-    val vertices = mutableListOf<Float3>()
+    val vertices = mutableListOf<Float4>()
     val normals = mutableListOf<Float3>()
     val faces = mutableListOf<Face>()
     File(path).forEachLine { line ->
         when {
-            line.startsWith("v ") -> parseFloat3(line, header = "v").also(vertices::add)
+            line.startsWith("v ") -> parseFloat4(line, header = "v").also(vertices::add)
             line.startsWith("vn ") -> parseFloat3(line, header = "vn").also(normals::add)
             line.startsWith("f ") -> {
                 line.substringAfter("f ")
@@ -28,6 +29,10 @@ suspend fun parseObj(path: String): Model = withContext(Dispatchers.IO) {
         }
     }
     return@withContext Model(faces.toTypedArray())
+}
+
+fun parseFloat4(string: String, header: String, delimiter: String = " ") = parseFloat3(string, header, delimiter).let {
+    Float4(it.x, it.y, it.z, 1f)
 }
 
 fun parseFloat3(string: String, header: String, delimiter: String = " ") = string.substringAfter("$header$delimiter")
