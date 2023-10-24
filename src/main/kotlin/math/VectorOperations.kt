@@ -61,7 +61,7 @@ fun Float4.transform(m: Matrix) = Float4(
     w = x * m[3, 0] + y * m[3, 1] + z * m[3, 2] + w * m[3, 3],
 )
 
-fun Float4.transformNormal(modelMatrix: Matrix): Float3 {
+fun Float3.transformNormal(modelMatrix: Matrix): Float3 {
     val m = modelMatrix.clone().apply {
         invert()
         transpose()
