@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.*
 import light.drawTrianglePhong
 import math.transform
 import math.transformNormal
+import math.translate
 import java.awt.image.BufferedImage
 import kotlin.system.measureTimeMillis
 
@@ -35,9 +36,9 @@ fun drawModelPhong(
 
         val modelMatrix = Matrix().apply {
             scale(x = scale, y = scale, z = scale)
-            rotateY(-75f)
-            translate(x = width / 2f, y = height / 2f, z = 400f)
-        }
+            rotateY(35f)
+            translate(Float3(x = width / 2f, y = height / 2f, z = 0f))
+        }.also { println(it) }
 
         model.faces.asFlow().flatMapMerge { face ->
             flow {
