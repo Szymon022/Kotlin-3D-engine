@@ -2,6 +2,7 @@ package light
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import culling.ZBuffer
 import data.Edge
 import data.Face
 import data.Float3
@@ -15,6 +16,7 @@ import java.awt.image.BufferedImage
 
 fun BufferedImage.drawTrianglePhong(
     face: Face,
+    zBuffer: ZBuffer,
     kd: Float,
     ks: Float,
     m: Int,
@@ -28,9 +30,9 @@ fun BufferedImage.drawTrianglePhong(
     var scanline = edgeTable.first().yMin
 
     val vertices = face.vertices
-    val (x1, y1) = vertices[0]
-    val (x2, y2) = vertices[1]
-    val (x3, y3) = vertices[2]
+    val (x1, y1, z1) = vertices[0]
+    val (x2, y2, z2) = vertices[1]
+    val (x3, y3, z3) = vertices[2]
     val divider = (y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3)
 
     val (v1Normal, v2Normal, v3Normal) = face.normals.map { it.normalize() }
@@ -46,16 +48,22 @@ fun BufferedImage.drawTrianglePhong(
             var x = e1.x.toInt()
             val xEnd = e2.x.toInt()
             while (x <= xEnd) {
+                if (x >= 0 && x < zBuffer.width && y >= 0 && y < zBuffer.height) {
+                    val commonXPart = x - x3
+                    val commonYPart = scanline - y3
+                    val w1 = ((y2 - y3) * commonXPart + (x3 - x2) * commonYPart) / divider
+                    val w2 = ((y3 - y1) * commonXPart + (x1 - x3) * commonYPart) / divider
+                    val w3 = 1 - w1 - w2
 
-                val commonXPart = x - x3
-                val commonYPart = scanline - y3
-                val w1 = ((y2 - y3) * commonXPart + (x3 - x2) * commonYPart) / divider
-                val w2 = ((y3 - y1) * commonXPart + (x1 - x3) * commonYPart) / divider
-                val w3 = 1 - w1 - w2
-                val interpolatedNormal = w1 * v1Normal + w2 * v2Normal + w3 * v3Normal
-                val color = lambert(kd, ks, m, lightColor, objColor, light, interpolatedNormal, observer)
+                    val z = w1 * z1 + w2 * z2 + w3 * z3
+                    if (z < zBuffer[x, y]) {
+                        zBuffer[x, y] = z
+                        val interpolatedNormal = w1 * v1Normal + w2 * v2Normal + w3 * v3Normal
+                        val color = lambert(kd, ks, m, lightColor, objColor, light, interpolatedNormal, observer)
 
-                setRGB(x, y, color.toArgb())
+                        setRGB(x, y, color.toArgb())
+                    }
+                }
                 x++
             }
         }
