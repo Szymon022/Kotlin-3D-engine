@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import culling.ZBuffer
 import culling.isVisible
+import data.CanvasFace
 import data.Face
 import data.Float3
 import data.Model
@@ -13,8 +14,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import light.drawTriangleGouraud
-import math.transform
-import math.transformNormal
+import math.createPerspectiveFieldOfView
+import math.lookAt
 import math.translate
 import java.awt.image.BufferedImage
 import kotlin.system.measureTimeMillis
@@ -31,24 +32,34 @@ fun drawModelGouraud(
 ): Flow<ImageBitmap> = flow {
     measureTimeMillis {
         val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
-        val scale = height / 2f
         val zBuffer = ZBuffer(width = width, height = height)
 
         val modelMatrix = Matrix().apply {
-            scale(x = scale, y = scale, z = scale)
-            rotateY(-75f)
-            translate(Float3(x = width / 2f, y = height / 2f, z = 0f))
+            scale(x = .5f, y = .5f, z = .5f)
+            rotateZ(45f)
+            rotateX(30f)
+            translate(Float3(x = .0f, y = -.5f, z = -5f))
         }
+        val lookAt = lookAt(
+            cameraPosition = Float3(.0f, .0f, 100f),
+            cameraTarget = Float3(.0f, .0f, -100f),
+            cameraUpVector = Float3(0f, 1f, 0f)
+        )
+        val perspective = createPerspectiveFieldOfView(
+            fovAngle = 60f,
+            aspectRatio = height.toFloat() / width,
+            nearPlaneDistance = 1f,
+            farPlaneDistance = 5f
+        )
 
         model.faces.asFlow().flatMapMerge { face ->
-            flow {
-                emit(
-                    Face(
-                        vertices = face.vertices.map { it.transform(modelMatrix) }.toTypedArray(),
-                        normals = face.normals.map { it.transformNormal(modelMatrix) }.toTypedArray(),
-                    )
-                )
-            }.flowOn(Dispatchers.Default)
+            toCanvasFaceFlow(
+                face = face,
+                canvas = bufferedImage,
+                model = modelMatrix,
+                lookAt = lookAt,
+                perspective = perspective,
+            )
         }.filter { it.isVisible(camera = observer) }
             .flatMapMerge(concurrency = 8) {
                 drawTriangleGouraudFlow(
@@ -70,7 +81,7 @@ fun drawModelGouraud(
 fun drawTriangleGouraudFlow(
     bitmap: BufferedImage,
     zBuffer: ZBuffer,
-    face: Face,
+    face: CanvasFace,
     lightColor: Color,
     objColor: Color,
     light: Float3,

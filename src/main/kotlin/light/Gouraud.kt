@@ -3,10 +3,7 @@ package light
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import culling.ZBuffer
-import data.Edge
-import data.Face
-import data.Float3
-import data.toEdgeTable
+import data.*
 import draw.moveToAET
 import draw.updateEdges
 import math.normalize
@@ -15,7 +12,7 @@ import math.times
 import java.awt.image.BufferedImage
 
 fun BufferedImage.drawTriangleGouraud(
-    face: Face,
+    face: CanvasFace,
     zBuffer: ZBuffer,
     kd: Float,
     ks: Float,
