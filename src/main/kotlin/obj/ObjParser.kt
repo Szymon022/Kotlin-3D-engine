@@ -21,8 +21,8 @@ suspend fun parseObj(path: String): Model = withContext(Dispatchers.IO) {
                     .split(" ")
                     .also { iPairs ->
                         Face(
-                            vertices = iPairs.map { vertices[it.substringBefore("//").toInt() - 1] }.toTypedArray(),
-                            normals = iPairs.map { normals[it.substringAfter("//").toInt() - 1] }.toTypedArray()
+                            vertices = iPairs.map { vertices[it.substringBefore("/").toInt() - 1] }.toTypedArray(),
+                            normals = iPairs.map { normals[it.substringAfterLast("/").toInt() - 1] }.toTypedArray()
                         ).also(faces::add)
                     }
             }
