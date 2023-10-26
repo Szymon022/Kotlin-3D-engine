@@ -39,4 +39,14 @@ fun Face.toEdgeTable(): MutableList<Edge> {
     return edgeTable
 }
 
+fun CanvasFace.toEdgeTable(): MutableList<Edge> {
+    val size = vertices.size
+    val offsets = vertices.map { Offset(x = it.x, y = it.y) }
+    val edgeTable = mutableListOf<Edge>()
+    repeat(size) { i ->
+        Edge(v1 = offsets[i % size], v2 = offsets[(i + 1) % size])?.let { edgeTable.add(it) }
+    }
+    return edgeTable
+}
+
 fun slope(x1: Float, x2: Float, y1: Float, y2: Float) = (y2 - y1) / (x2 - x1)
