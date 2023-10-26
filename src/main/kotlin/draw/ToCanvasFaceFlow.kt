@@ -5,7 +5,9 @@ import data.CanvasFace
 import data.Face
 import data.Float3
 import data.Float4
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import math.transform
 import math.transformNormal
 import java.awt.image.BufferedImage
@@ -29,7 +31,7 @@ fun toCanvasFaceFlow(face: Face, canvas: BufferedImage, model: Matrix, lookAt: M
     }.toTypedArray()
     val transformedNormals = normals.map { it.transformNormal(model) }.toTypedArray()
     emit(CanvasFace(vertices = canvasVertices, normals = transformedNormals))
-}
+}.flowOn(Dispatchers.Default)
 
 private fun Float4.toCanvas(model: Matrix, lookAt: Matrix, perspective: Matrix, width: Int, height: Int) =
     transform(model)
