@@ -57,9 +57,8 @@ fun drawModelPhong(
                 lookAt = lookAt,
                 perspective = perspective,
             )
-        }.filter { println(it); it.isVisible(camera = observer) }
+        }.filter { it.isVisible(camera = observer) }
             .flatMapMerge(concurrency = 8) {
-                println(it)
                 drawTrianglePhongFlow(
                     bitmap = bufferedImage,
                     zBuffer = zBuffer,
