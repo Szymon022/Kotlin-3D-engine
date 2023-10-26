@@ -3,8 +3,8 @@ package light
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import culling.ZBuffer
+import data.CanvasFace
 import data.Edge
-import data.Face
 import data.Float3
 import data.toEdgeTable
 import draw.moveToAET
@@ -15,7 +15,7 @@ import math.times
 import java.awt.image.BufferedImage
 
 fun BufferedImage.drawStillTriangle(
-    face: Face,
+    face: CanvasFace,
     zBuffer: ZBuffer,
     kd: Float,
     ks: Float,
