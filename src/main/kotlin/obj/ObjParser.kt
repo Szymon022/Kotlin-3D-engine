@@ -3,12 +3,11 @@ package obj
 import data.Face
 import data.Float3
 import data.Float4
-import data.Model
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
-suspend fun parseObj(path: String): Model = withContext(Dispatchers.IO) {
+suspend fun parseObj(path: String): Array<Face> = withContext(Dispatchers.IO) {
     val vertices = mutableListOf<Float4>()
     val normals = mutableListOf<Float3>()
     val faces = mutableListOf<Face>()
@@ -28,7 +27,7 @@ suspend fun parseObj(path: String): Model = withContext(Dispatchers.IO) {
             }
         }
     }
-    return@withContext Model(faces.toTypedArray())
+    return@withContext faces.toTypedArray()
 }
 
 fun parseFloat4(string: String, header: String, delimiter: String = " ") = parseFloat3(string, header, delimiter).let {
