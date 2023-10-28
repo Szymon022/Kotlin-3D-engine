@@ -2,7 +2,6 @@ package draw
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import culling.ZBuffer
 import culling.isVisible
@@ -15,7 +14,6 @@ import kotlinx.coroutines.flow.*
 import light.drawTrianglePhong
 import math.createPerspectiveFieldOfView
 import math.lookAt
-import math.translate
 import java.awt.image.BufferedImage
 import kotlin.system.measureTimeMillis
 
@@ -33,10 +31,6 @@ fun drawModelPhong(
         val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
         val zBuffer = ZBuffer(width = width, height = height)
 
-        val modelMatrix = Matrix().apply {
-            rotateY(70f)
-            translate(Float3(x = .0f, y = .0f, z = -2.5f))
-        }
         val lookAt = lookAt(
             cameraPosition = Float3(.0f, .0f, 100f),
             cameraTarget = Float3(.0f, .0f, -100f),
@@ -53,7 +47,7 @@ fun drawModelPhong(
             toCanvasFaceFlow(
                 canvas = bufferedImage,
                 face = face,
-                model = modelMatrix,
+                model = model.matrix,
                 lookAt = lookAt,
                 perspective = perspective,
             )
