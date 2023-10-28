@@ -3,6 +3,7 @@ package math
 import androidx.compose.ui.graphics.Matrix
 import data.Float3
 import data.Float4
+import kotlin.math.abs
 
 infix fun Float3.x(w: Float3): Float3 {
     val (a1, a2, a3) = this
@@ -18,11 +19,11 @@ infix fun Float3.o(w: Float3) = x * w.x + y * w.y + z * w.z
 
 fun Float3.normalize(): Float3 {
     val length = this.length
-    return copy(
-        x = x / length,
-        y = y / length,
-        z = z / length,
-    )
+    return if (abs(length) <= 1e-7f) {
+        Float3.zero()
+    } else {
+        copy(x = x / length, y = y / length, z = z / length)
+    }
 }
 
 operator fun Float.times(v: Float3): Float3 {
