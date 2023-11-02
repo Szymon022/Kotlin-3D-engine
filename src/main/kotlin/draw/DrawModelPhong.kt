@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import culling.ZBuffer
 import culling.isVisible
+import data.Camera
 import data.CanvasFace
 import data.Float3
 import data.Model
@@ -12,8 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import light.drawTrianglePhong
-import math.createPerspectiveFieldOfView
-import math.lookAt
 import java.awt.image.BufferedImage
 import kotlin.system.measureTimeMillis
 
@@ -25,33 +24,21 @@ fun drawModelPhong(
     lightColor: Color,
     objColor: Color,
     light: Float3,
-    observer: Float3
+    camera: Camera,
 ): Flow<ImageBitmap> = flow {
     measureTimeMillis {
         val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
         val zBuffer = ZBuffer(width = width, height = height)
-
-        val lookAt = lookAt(
-            cameraPosition = Float3(.0f, .0f, 100f),
-            cameraTarget = Float3(.0f, .0f, -100f),
-            cameraUpVector = Float3(0f, 1f, 0f)
-        )
-        val perspective = createPerspectiveFieldOfView(
-            fovAngle = 60f,
-            aspectRatio = height.toFloat() / width,
-            nearPlaneDistance = 1f,
-            farPlaneDistance = 5f
-        )
 
         model.faces.asFlow().flatMapMerge { face ->
             toCanvasFaceFlow(
                 canvas = bufferedImage,
                 face = face,
                 model = model.matrix,
-                lookAt = lookAt,
-                perspective = perspective,
+                lookAt = camera.lookAt,
+                perspective = camera.perspective,
             )
-        }.filter { it.isVisible(camera = observer) }
+        }.filter { it.isVisible(camera.target) }
             .flatMapMerge(concurrency = 8) {
                 drawTrianglePhongFlow(
                     bitmap = bufferedImage,
@@ -60,9 +47,8 @@ fun drawModelPhong(
                     lightColor = lightColor,
                     objColor = objColor,
                     light = light,
-                    observer = observer,
+                    camera = camera,
                 )
-
             }.flowOn(Dispatchers.Default).collect()
         emit(bufferedImage.toComposeImageBitmap())
     }.also { println("rendered in $it ms") }
@@ -76,7 +62,7 @@ fun drawTrianglePhongFlow(
     lightColor: Color,
     objColor: Color,
     light: Float3,
-    observer: Float3,
+    camera: Camera,
     kd: Float = 1f,
     ks: Float = 1f,
     m: Int = 10,
@@ -91,7 +77,7 @@ fun drawTrianglePhongFlow(
         lightColor = lightColor,
         objColor = objColor,
         light = light,
-        observer = observer,
+        camera = camera,
     )
     emit(Unit)
 }
