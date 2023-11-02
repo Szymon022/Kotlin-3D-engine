@@ -8,6 +8,7 @@ import math.transform
 class Camera private constructor(
     val position: Float3,
     val lookAt: Matrix = Matrix(),
+    val target: Float3,
     val perspective: Matrix = Matrix(),
     private val owner: Model? = null
 ) {
@@ -17,6 +18,7 @@ class Camera private constructor(
         fun create(
             relativePosition: Float3,
             relativeTarget: Float3,
+            upVector: Float3,
             fov: Float,
             width: Int,
             height: Int,
@@ -27,11 +29,11 @@ class Camera private constructor(
                 val modelMatrix = owner.matrix
                 val position = relativePosition.transform(modelMatrix)
                 val target = Float3.zero().transform(modelMatrix)
-                val lookAt = lookAt(position, target, Float3.unitZ())
-                Camera(position, lookAt, perspective, owner)
+                val lookAt = lookAt(position, target, upVector)
+                Camera(position, lookAt, target, perspective, owner)
             } else {
-                val lookAt = lookAt(relativePosition, relativeTarget, Float3.unitZ())
-                Camera(relativePosition, lookAt, perspective, null)
+                val lookAt = lookAt(relativePosition, relativeTarget, upVector)
+                Camera(relativePosition, lookAt, relativeTarget, perspective, null)
             }
         }
     }
