@@ -17,8 +17,8 @@ fun createPerspectiveFieldOfView(
     val common = f.toDouble() / (n.toDouble() - f.toDouble())
     return Matrix(
         floatArrayOf(
-            cx, 0f, 0f, 0f,
-            0f, cy, 0f, 0f,
+            cy, 0f, 0f, 0f,
+            0f, cx, 0f, 0f,
             0f, 0f, common.toFloat(), -1f,
             0f, 0f, (n.toDouble() * common).toFloat(), 0f,
         )
