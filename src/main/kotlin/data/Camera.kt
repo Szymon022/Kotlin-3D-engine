@@ -22,7 +22,7 @@ class Camera private constructor(
             height: Int,
             owner: Model? = null
         ): Camera {
-            val perspective = createPerspectiveFieldOfView(fov, height / width.toFloat(), 1f, 3f)
+            val perspective = createPerspectiveFieldOfView(fov, width / height.toFloat(), 1f, 5f)
             return if (owner != null) {
                 val modelMatrix = owner.matrix
                 val position = relativePosition.transform(modelMatrix)
