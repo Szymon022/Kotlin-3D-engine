@@ -9,4 +9,10 @@ class ZBuffer(val width: Int, val height: Int) {
     operator fun set(x: Int, y: Int, value: Float) {
         buffer[x + y * width] = value
     }
+
+    fun reset() {
+        repeat(width * height) {
+            buffer[it] = Float.MAX_VALUE
+        }
+    }
 }
