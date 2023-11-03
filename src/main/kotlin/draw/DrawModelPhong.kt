@@ -18,9 +18,8 @@ import kotlin.system.measureTimeMillis
 
 @OptIn(ExperimentalCoroutinesApi::class)
 fun drawModelPhong(
+    bufferedImage: BufferedImage,
     zBuffer: ZBuffer,
-    width: Int,
-    height: Int,
     model: Model,
     lightColor: Color,
     objColor: Color,
@@ -28,8 +27,6 @@ fun drawModelPhong(
     camera: Camera,
 ): Flow<ImageBitmap> = flow {
     measureTimeMillis {
-        val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
-
         model.faces.asFlow().flatMapMerge { face ->
             toCanvasFaceFlow(
                 canvas = bufferedImage,
