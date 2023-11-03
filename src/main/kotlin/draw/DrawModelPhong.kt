@@ -22,7 +22,6 @@ fun drawModelPhong(
     zBuffer: ZBuffer,
     model: Model,
     lightColor: Color,
-    objColor: Color,
     light: Float3,
     camera: Camera,
 ): Flow<ImageBitmap> = flow {
@@ -42,7 +41,7 @@ fun drawModelPhong(
                     zBuffer = zBuffer,
                     face = it,
                     lightColor = lightColor,
-                    objColor = objColor,
+                    objColor = model.color,
                     light = light,
                     camera = camera,
                 )
