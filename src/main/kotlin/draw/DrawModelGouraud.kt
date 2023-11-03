@@ -34,12 +34,6 @@ fun drawModelGouraud(
         val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
         val zBuffer = ZBuffer(width = width, height = height)
 
-        val modelMatrix = Matrix().apply {
-            scale(x = .5f, y = .5f, z = .5f)
-            rotateZ(45f)
-            rotateX(30f)
-            translate(Float3(x = .0f, y = -.5f, z = -5f))
-        }
         val lookAt = lookAt(
             cameraPosition = Float3(.0f, .0f, 100f),
             cameraTarget = Float3(.0f, .0f, -100f),
@@ -56,7 +50,7 @@ fun drawModelGouraud(
             toCanvasFaceFlow(
                 face = face,
                 canvas = bufferedImage,
-                model = modelMatrix,
+                model = model.matrix,
                 lookAt = lookAt,
                 perspective = perspective,
             )

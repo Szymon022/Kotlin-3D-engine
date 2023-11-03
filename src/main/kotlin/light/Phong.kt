@@ -6,6 +6,7 @@ import culling.ZBuffer
 import data.*
 import draw.moveToAET
 import draw.updateEdges
+import math.minus
 import math.normalize
 import math.plus
 import math.times
@@ -20,7 +21,7 @@ fun BufferedImage.drawTrianglePhong(
     lightColor: Color,
     objColor: Color,
     light: Float3,
-    observer: Float3,
+    camera: Camera,
 ) {
     val edgeTable = face.toEdgeTable().also { it.sortBy(Edge::yMin) }
     val activeEdgeTable = mutableListOf<Edge>()
@@ -56,7 +57,8 @@ fun BufferedImage.drawTrianglePhong(
                     if (z < zBuffer[x, y]) {
                         zBuffer[x, y] = z
                         val interpolatedNormal = w1 * v1Normal + w2 * v2Normal + w3 * v3Normal
-                        val color = lambert(kd, ks, m, lightColor, objColor, light, interpolatedNormal, observer)
+                        val observer = camera.position - Float3(x.toFloat(), y.toFloat(), z).normalize()
+                        val color = lambert(kd, ks, m, lightColor, objColor, light, interpolatedNormal.normalize(), observer)
 
                         setRGB(x, y, color.toArgb())
                     }
