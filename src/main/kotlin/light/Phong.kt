@@ -57,7 +57,7 @@ fun BufferedImage.drawTrianglePhong(
                     if (z < zBuffer[x, y]) {
                         zBuffer[x, y] = z
                         val interpolatedNormal = w1 * v1Normal + w2 * v2Normal + w3 * v3Normal
-                        val observer = camera.position - Float3(x.toFloat(), y.toFloat(), z)
+                        val observer = camera.position - Float3(x.toFloat(), y.toFloat(), z).normalize()
                         val color = lambert(kd, ks, m, lightColor, objColor, light, interpolatedNormal.normalize(), observer)
 
                         setRGB(x, y, color.toArgb())
