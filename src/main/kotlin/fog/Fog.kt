@@ -18,15 +18,15 @@ fun BufferedImage.addFog(zBuffer: ZBuffer, fog: Fog) {
             if (z > fog.minRange && z < fog.maxRange) {
                 val alpha = (z - fog.minRange) / (fog.maxRange - fog.minRange)
                 val rgb = getRGB(x, y)
-                setRGB(x, y, blend(rgb, fog.color.toArgb(), alpha))
+                setRGB(x, y, blend(Color(rgb), fog.color, alpha).toArgb())
             }
         }
     }
 }
 
-private fun blend(color: Int, fogColor: Int, alpha: Float): Int {
-    val r = (((color and 0xFF0000) shr 16) * (1 - alpha) + ((fogColor and 0xFF0000) shr 16) * alpha).toInt() shl 16
-    val g = (((color and 0xFF00) shr 8) * (1 - alpha) + ((fogColor and 0xFF00) shr 8) * alpha).toInt() shl 8
-    val b = ((color and 0xFF) * (1 - alpha) + (fogColor and 0xFF) * alpha).toInt()
-    return (-16777216 or r or g or b)
+private fun blend(color: Color, fogColor: Color, alpha: Float): Color {
+    val red = color.red * (1 - alpha) + fogColor.red * alpha
+    val green = color.green * (1 - alpha) + fogColor.green * alpha
+    val blue = color.blue * (1 - alpha) + fogColor.blue * alpha
+    return Color(red = red, green = green, blue = blue)
 }
