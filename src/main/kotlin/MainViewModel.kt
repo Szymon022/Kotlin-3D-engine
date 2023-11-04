@@ -2,6 +2,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import data.Model
 import draw.drawFilledModel
+import fog.Fog
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import obj.parseObj
@@ -14,6 +15,8 @@ class MainViewModel : ViewModel() {
 
     private val _isLoadingResources = MutableStateFlow(false)
     val isLoadingResources = _isLoadingResources.asStateFlow()
+
+    val fog = MutableStateFlow(Fog(.75f, .9f))
 
     private val model = MutableStateFlow<Model?>(null)
 
@@ -41,6 +44,18 @@ class MainViewModel : ViewModel() {
     }
 
     fun initialScene() = ImageBitmap(WIDTH, HEIGHT)
+
+    fun onMinFogRangeChange(minRange: Float) {
+        fog.update {
+            it.copy(minRange = minRange)
+        }
+    }
+
+    fun onMaxFoxRangeChange(maxRange: Float) {
+        fog.update {
+            it.copy(maxRange = maxRange)
+        }
+    }
 
     companion object {
         const val WIDTH = 900
