@@ -45,7 +45,7 @@ private fun Float4.toCanvas(model: Matrix, lookAt: Matrix, perspective: Matrix, 
 
 private fun Float3.toCanvas(width: Int, height: Int) = copy(
     x = 0.5f * width * (1f + x / 1f),
-    y = 0.5f * height * (1f + y / 1f)
+    y = 0.5f * height * (1f - y / 1f)
 )
 
 private fun Float4.normalize() = Float3(x / w, y / w, z / w)

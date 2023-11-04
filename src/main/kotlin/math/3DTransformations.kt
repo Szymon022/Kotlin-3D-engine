@@ -36,5 +36,5 @@ fun lookAt(cameraPosition: Float3, cameraTarget: Float3, cameraUpVector: Float3)
             v32.z, v1.z, v31.z, 0f,
             -(v32 o cameraPosition), -(v1 o cameraPosition), -(v31 o cameraPosition), 1f
         )
-    )
+    ).also { it.transpose() }
 }
