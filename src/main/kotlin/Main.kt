@@ -61,6 +61,7 @@ fun main() = application {
 @Composable
 fun SidePanel(viewModel: MainViewModel, modifier: Modifier = Modifier) {
     val fog by viewModel.fog.collectAsState()
+    val shading by viewModel.shading.collectAsState()
     Column(modifier = modifier) {
         FogControls(
             fog = fog,
@@ -68,6 +69,7 @@ fun SidePanel(viewModel: MainViewModel, modifier: Modifier = Modifier) {
             onMaxFogRangeChange = viewModel::onMaxFoxRangeChange
         )
         Divider(modifier = Modifier.fillMaxWidth())
+        ShadingType(shadingAlgorithm = shading, onShadingAlgorithmChange = viewModel::onShadingChange)
     }
 }
 
@@ -105,3 +107,21 @@ fun FogControls(
     }
 }
 
+@Composable
+fun ShadingType(shadingAlgorithm: Shading, onShadingAlgorithmChange: (Shading) -> Unit) {
+    LabeledGroup("Shading type") {
+        Shading.values().forEach {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Checkbox(
+                    checked = it == shadingAlgorithm,
+                    onCheckedChange = { checked ->
+                        if (checked) {
+                            onShadingAlgorithmChange(it)
+                        }
+                    }
+                )
+                Text(text = it.name, style = MaterialTheme.typography.caption)
+            }
+        }
+    }
+}

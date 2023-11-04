@@ -17,6 +17,7 @@ class MainViewModel : ViewModel() {
     val isLoadingResources = _isLoadingResources.asStateFlow()
 
     val fog = MutableStateFlow(Fog(.75f, .9f))
+    val shading = MutableStateFlow(Shading.Phong)
 
     private val model = MutableStateFlow<Model?>(null)
 
@@ -57,8 +58,16 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    fun onShadingChange(newShading: Shading) {
+        shading.update { newShading }
+    }
+
     companion object {
         const val WIDTH = 900
         const val HEIGHT = 600
     }
+}
+
+enum class Shading {
+    Still, Gouraud, Phong,
 }
