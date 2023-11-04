@@ -9,11 +9,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
+import fog.Fog
 
 @Composable
 @Preview
@@ -60,23 +62,11 @@ fun main() = application {
 fun SidePanel(viewModel: MainViewModel, modifier: Modifier = Modifier) {
     val fog by viewModel.fog.collectAsState()
     Column(modifier = modifier) {
-        LabeledGroup(label = "Fog controls") {
-            Text(text = "minRange: ${String.format("%.3f", fog.minRange)}")
-            Slider(
-                modifier = Modifier.fillMaxWidth(),
-                value = fog.minRange,
-                onValueChange = viewModel::onMinFogRangeChange,
-                valueRange = 0f..3f
-            )
-            Spacer(Modifier.height(4.dp))
-            Text(text = "maxRange: ${String.format("%.3f", fog.maxRange)}")
-            Slider(
-                modifier = Modifier.fillMaxWidth(),
-                value = fog.maxRange,
-                onValueChange = viewModel::onMaxFoxRangeChange,
-                valueRange = 0f..3f
-            )
-        }
+        FogControls(
+            fog = fog,
+            onMinFogRangeChange = viewModel::onMinFogRangeChange,
+            onMaxFogRangeChange = viewModel::onMaxFoxRangeChange
+        )
         Divider(modifier = Modifier.fillMaxWidth())
     }
 }
@@ -84,8 +74,34 @@ fun SidePanel(viewModel: MainViewModel, modifier: Modifier = Modifier) {
 @Composable
 fun LabeledGroup(label: String, modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit = {}) {
     Column(modifier = modifier) {
-        Text(text = label)
+        Text(text = label, fontWeight = FontWeight.SemiBold)
         Box(modifier = Modifier.height(4.dp))
         content()
     }
 }
+
+@Composable
+fun FogControls(
+    fog: Fog,
+    onMinFogRangeChange: (Float) -> Unit,
+    onMaxFogRangeChange: (Float) -> Unit,
+) {
+    LabeledGroup(label = "Fog controls") {
+        Text(text = "minRange: ${String.format("%.3f", fog.minRange)}", style = MaterialTheme.typography.caption)
+        Slider(
+            modifier = Modifier.fillMaxWidth(),
+            value = fog.minRange,
+            onValueChange = onMinFogRangeChange,
+            valueRange = 0f..3f
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(text = "maxRange: ${String.format("%.3f", fog.maxRange)}", style = MaterialTheme.typography.caption)
+        Slider(
+            modifier = Modifier.fillMaxWidth(),
+            value = fog.maxRange,
+            onValueChange = onMaxFogRangeChange,
+            valueRange = 0f..3f
+        )
+    }
+}
+
