@@ -63,6 +63,7 @@ fun SidePanel(viewModel: MainViewModel, modifier: Modifier = Modifier) {
     val fog by viewModel.fog.collectAsState()
     val shading by viewModel.shading.collectAsState()
     val time by viewModel.timeOfTheDay.collectAsState()
+    val params by viewModel.shadingParams.collectAsState()
     Column(modifier = modifier) {
         TimeOfTheDay(time = time, onChange = viewModel::setTimeOfTheDay)
         FogControls(
@@ -72,6 +73,12 @@ fun SidePanel(viewModel: MainViewModel, modifier: Modifier = Modifier) {
         )
         Divider(modifier = Modifier.fillMaxWidth())
         ShadingType(shadingAlgorithm = shading, onShadingAlgorithmChange = viewModel::onShadingChange)
+        ShadingParams(
+            params = params,
+            onKdChange = viewModel::onSetKd,
+            onKsChange = viewModel::onSetKs,
+            onMChange = viewModel::onSetM
+        )
     }
 }
 
@@ -138,6 +145,37 @@ fun ShadingType(shadingAlgorithm: Shading, onShadingAlgorithmChange: (Shading) -
                 )
                 Text(text = it.name, style = MaterialTheme.typography.caption)
             }
+        }
+    }
+}
+
+@Composable
+fun ShadingParams(
+    params: ShadingParams,
+    onKsChange: (Float) -> Unit,
+    onKdChange: (Float) -> Unit,
+    onMChange: (Float) -> Unit
+) {
+    LabeledGroup("Shading params") {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("kd=${String.format("%.2f", params.kd)}")
+            Spacer(modifier = Modifier.weight(1f))
+            Slider(modifier = Modifier.width(100.dp), value = params.kd, onValueChange = onKdChange)
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("ks=${String.format("%.2f", params.ks)}")
+            Spacer(modifier = Modifier.weight(1f))
+            Slider(modifier = Modifier.width(100.dp), value = params.ks, onValueChange = onKsChange)
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("m=${params.m}")
+            Spacer(modifier = Modifier.weight(1f))
+            Slider(
+                modifier = Modifier.width(100.dp),
+                value = params.m.toFloat(),
+                onValueChange = onMChange,
+                valueRange = 0f..100f,
+            )
         }
     }
 }
