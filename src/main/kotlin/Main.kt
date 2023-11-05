@@ -62,7 +62,9 @@ fun main() = application {
 fun SidePanel(viewModel: MainViewModel, modifier: Modifier = Modifier) {
     val fog by viewModel.fog.collectAsState()
     val shading by viewModel.shading.collectAsState()
+    val time by viewModel.timeOfTheDay.collectAsState()
     Column(modifier = modifier) {
+        TimeOfTheDay(time = time, onChange = viewModel::setTimeOfTheDay)
         FogControls(
             fog = fog,
             onMinFogRangeChange = viewModel::onMinFogRangeChange,
@@ -79,6 +81,20 @@ fun LabeledGroup(label: String, modifier: Modifier = Modifier, content: @Composa
         Text(text = label, fontWeight = FontWeight.SemiBold)
         Box(modifier = Modifier.height(4.dp))
         content()
+    }
+}
+
+@Composable
+fun TimeOfTheDay(time: TimeOfTheDay, onChange: (TimeOfTheDay) -> Unit) {
+    LabeledGroup("Time of the day") {
+        Row {
+            TimeOfTheDay.values().forEach {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(checked = it == time, onCheckedChange = { isChecked -> if (isChecked) onChange(it) })
+                    Text(it.name)
+                }
+            }
+        }
     }
 }
 
