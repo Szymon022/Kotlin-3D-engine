@@ -17,6 +17,7 @@ class MainViewModel : ViewModel() {
     val fog = MutableStateFlow(Fog(.75f, .9f))
     val shading = MutableStateFlow(Shading.Phong)
     val timeOfTheDay = MutableStateFlow(TimeOfTheDay.Day)
+    val shadingParams = MutableStateFlow(ShadingParams())
 
     private val model = MutableStateFlow<Model?>(null)
 
@@ -65,6 +66,12 @@ class MainViewModel : ViewModel() {
         this.timeOfTheDay.update { timeOfTheDay }
     }
 
+    fun onSetKs(ks: Float) = shadingParams.update { it.copy(ks = ks) }
+
+    fun onSetKd(kd: Float) = shadingParams.update { it.copy(kd = kd) }
+
+    fun onSetM(m: Float) = shadingParams.update { it.copy(m = m.toInt()) }
+
     companion object {
         const val WIDTH = 900
         const val HEIGHT = 600
@@ -78,3 +85,9 @@ enum class Shading {
 enum class TimeOfTheDay {
     Day, Night
 }
+
+data class ShadingParams(
+    val ks: Float = .6f,
+    val kd: Float = .8f,
+    val m: Int = 8,
+)
