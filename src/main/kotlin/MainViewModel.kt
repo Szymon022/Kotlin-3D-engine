@@ -27,8 +27,7 @@ class MainViewModel : ViewModel() {
     private val _isLoadingResources = MutableStateFlow(false)
     val isLoadingResources = _isLoadingResources.asStateFlow()
 
-    private val ufoModel = MutableStateFlow<Model?>(null)
-    private val ludzikModel = MutableStateFlow<Model?>(null)
+    private val models = MutableStateFlow<List<Model>>(emptyList())
     private val camera = MutableStateFlow<Camera?>(null)
     val fog = MutableStateFlow(Fog(.75f, .9f))
     val shading = MutableStateFlow(Shading.Phong)
@@ -45,34 +44,36 @@ class MainViewModel : ViewModel() {
     init {
         viewModelScope.launch {
             _isLoadingResources.update { true }
-            ufoModel.update {
-                Model(
-                    faces = parseObj("D:\\IdeaProjects\\Engine3D\\src\\main\\resources\\models\\ufo.obj"),
-                    color = Color.Red,
-                    onMatrixUpdate = {
-                        val translationMatrix = Matrix().apply { translate(0f, 0f, -2f) }
-                        val rotationMatrix = Matrix().apply { rotateY(it) }
-                        val secondTranslationMatrix = Matrix().apply { translate(0f, 0f, -9f) }
-                        translationMatrix.timesAssign(rotationMatrix)
-                        translationMatrix.timesAssign(secondTranslationMatrix)
-                        translationMatrix.transpose()
-                        translationMatrix
-                    }
+            models.update {
+                listOf(
+                    Model(
+                        faces = parseObj("D:\\IdeaProjects\\Engine3D\\src\\main\\resources\\models\\ufo.obj"),
+                        color = Color.Red,
+                        onMatrixUpdate = {
+                            val translationMatrix = Matrix().apply { translate(0f, 0f, -2f) }
+                            val rotationMatrix = Matrix().apply { rotateY(it) }
+                            val secondTranslationMatrix = Matrix().apply { translate(0f, 0f, -9f) }
+                            translationMatrix.timesAssign(rotationMatrix)
+                            translationMatrix.timesAssign(secondTranslationMatrix)
+                            translationMatrix.transpose()
+                            translationMatrix
+                        }
+                    ),
+                    Model(
+                        faces = parseObj("D:\\IdeaProjects\\Engine3D\\src\\main\\resources\\models\\ludzik.obj"),
+                        color = Color.Cyan,
+                        onMatrixUpdate = {
+                            val rotationMatrix = Matrix().apply { rotateX(it) }
+                            val translationMatrix = Matrix().apply { translate(0f, 0f, -10f) }
+                            rotationMatrix.timesAssign(translationMatrix)
+                            rotationMatrix.transpose()
+                            rotationMatrix
+                        }
+                    )
                 )
             }
-            ludzikModel.update {
-                Model(
-                    faces = parseObj("D:\\IdeaProjects\\Engine3D\\src\\main\\resources\\models\\ludzik.obj"),
-                    color = Color.Cyan,
-                    onMatrixUpdate = {
-                        val rotationMatrix = Matrix().apply { rotateX(it) }
-                        val translationMatrix = Matrix().apply { translate(0f, 0f, -10f) }
-                        rotationMatrix.timesAssign(translationMatrix)
-                        rotationMatrix.transpose()
-                        rotationMatrix
-                    }
-                )
-            }
+
+
             camera.update {
                 Camera.create(
                     relativePosition = Float3(0f, 0f, -15f),
@@ -90,30 +91,22 @@ class MainViewModel : ViewModel() {
                 zBuffer.reset()
                 bufferedImage.reset(if (timeOfTheDay.value == TimeOfTheDay.Day) Color.White else Color.Black)
 
-                drawModelPhong(
-                    bufferedImage = bufferedImage,
-                    zBuffer = zBuffer,
-                    model = ufoModel.value!!,
-                    lightColor = lightColor,
-                    light = light,
-                    camera = camera.value!!,
-                ).collect()
-
-                drawModelPhong(
-                    bufferedImage = bufferedImage,
-                    zBuffer = zBuffer,
-                    model = ludzikModel.value!!,
-                    lightColor = lightColor,
-                    light = light,
-                    camera = camera.value!!,
-                ).collect()
+                models.value.forEach { model ->
+                    drawModelPhong(
+                        bufferedImage = bufferedImage,
+                        zBuffer = zBuffer,
+                        model = model,
+                        lightColor = lightColor,
+                        light = light,
+                        camera = camera.value!!,
+                    ).collect()
+                }
 
                 bufferedImage.addFog(zBuffer, fog = fog.value)
 
                 _scene.emit(bufferedImage.toComposeImageBitmap())
                 time += 1
-                ufoModel.value?.update(time)
-                ludzikModel.value?.update(time)
+                models.value.forEach { it.update(time) }
 //                camera.value?.refresh()
             }
         }
