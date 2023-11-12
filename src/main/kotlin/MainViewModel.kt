@@ -96,6 +96,7 @@ class MainViewModel : ViewModel() {
                         bufferedImage = bufferedImage,
                         zBuffer = zBuffer,
                         model = model,
+                        shadingParams = shadingParams.value,
                         lightColor = lightColor,
                         light = light,
                         camera = camera.value!!,

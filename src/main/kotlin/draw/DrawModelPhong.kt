@@ -1,5 +1,6 @@
 package draw
 
+import ShadingParams
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
@@ -21,6 +22,7 @@ fun drawModelPhong(
     bufferedImage: BufferedImage,
     zBuffer: ZBuffer,
     model: Model,
+    shadingParams: ShadingParams,
     lightColor: Color,
     light: Float3,
     camera: Camera,
@@ -44,6 +46,9 @@ fun drawModelPhong(
                     objColor = model.color,
                     light = light,
                     camera = camera,
+                    kd = shadingParams.kd,
+                    ks = shadingParams.ks,
+                    m = shadingParams.m
                 )
             }.flowOn(Dispatchers.Default).collect()
         emit(bufferedImage.toComposeImageBitmap())
