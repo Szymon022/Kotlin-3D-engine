@@ -3,10 +3,7 @@ package light
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import culling.ZBuffer
-import data.CanvasFace
-import data.Edge
-import data.Float3
-import data.toEdgeTable
+import data.*
 import draw.moveToAET
 import draw.updateEdges
 import math.normalize
@@ -23,7 +20,7 @@ fun BufferedImage.drawStillTriangle(
     lightColor: Color,
     objColor: Color,
     light: Float3,
-    observer: Float3,
+    camera: Camera,
 ) {
     val edgeTable = face.toEdgeTable().also { it.sortBy(Edge::yMin) }
     val activeEdgeTable = mutableListOf<Edge>()
@@ -37,7 +34,7 @@ fun BufferedImage.drawStillTriangle(
 
     val (n1, n2, n3) = face.normals
     val approxNormal = (0.33333334f * (n1 + n2 + n3)).normalize()
-    val fillColor = lambert(kd, ks, m, lightColor, objColor, light, approxNormal, observer).toArgb()
+    val fillColor = lambert(kd, ks, m, lightColor, objColor, light, approxNormal, camera.target).toArgb()
 
     while (!(edgeTable.isEmpty() && activeEdgeTable.isEmpty())) {
         edgeTable.moveToAET(activeEdgeTable, scanline)
