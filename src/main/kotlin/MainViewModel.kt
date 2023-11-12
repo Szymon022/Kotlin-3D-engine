@@ -6,7 +6,9 @@ import culling.ZBuffer
 import data.Camera
 import data.Float3
 import data.Model
+import draw.drawModelGouraud
 import draw.drawModelPhong
+import draw.drawModelStill
 import draw.reset
 import fog.Fog
 import fog.addFog
@@ -92,15 +94,37 @@ class MainViewModel : ViewModel() {
                 bufferedImage.reset(if (timeOfTheDay.value == TimeOfTheDay.Day) Color.White else Color.Black)
 
                 models.value.forEach { model ->
-                    drawModelPhong(
-                        bufferedImage = bufferedImage,
-                        zBuffer = zBuffer,
-                        model = model,
-                        shadingParams = shadingParams.value,
-                        lightColor = lightColor,
-                        light = light,
-                        camera = camera.value!!,
-                    ).collect()
+                    when (shading.value) {
+                        Shading.Still -> drawModelStill(
+                            bufferedImage = bufferedImage,
+                            zBuffer = zBuffer,
+                            model = model,
+                            shadingParams = shadingParams.value,
+                            lightColor = lightColor,
+                            light = light,
+                            camera = camera.value!!,
+                        )
+
+                        Shading.Gouraud -> drawModelGouraud(
+                            bufferedImage = bufferedImage,
+                            zBuffer = zBuffer,
+                            model = model,
+                            shadingParams = shadingParams.value,
+                            lightColor = lightColor,
+                            light = light,
+                            camera = camera.value!!,
+                        )
+
+                        Shading.Phong -> drawModelPhong(
+                            bufferedImage = bufferedImage,
+                            zBuffer = zBuffer,
+                            model = model,
+                            shadingParams = shadingParams.value,
+                            lightColor = lightColor,
+                            light = light,
+                            camera = camera.value!!,
+                        )
+                    }.collect()
                 }
 
                 bufferedImage.addFog(zBuffer, fog = fog.value)
