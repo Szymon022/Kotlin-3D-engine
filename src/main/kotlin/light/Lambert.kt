@@ -29,8 +29,8 @@ fun lambert(
     val (rLight, gLight, bLight) = lightColor
     val (rObj, gObj, bObj) = objColor
     val reflection = 2 * (normal o light).coerceAtLeast(0f) * normal - light
-    val commonPart = kd * (normal o light).coerceAtLeast(0f) +
-            ks * (observer o reflection).coerceAtLeast(0f).pow(m)
+    val commonPart = (kd * (normal o light).coerceAtLeast(0f) +
+            ks * (observer o reflection).pow(m)).coerceIn(0f..Float.MAX_VALUE)
     return Color(
         // probably there will be coerceAtMost(1f) needed
         red = (rLight * rObj * commonPart).coerceIn(0f, 1f),
