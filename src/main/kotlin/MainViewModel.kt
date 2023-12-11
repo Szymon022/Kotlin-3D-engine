@@ -180,7 +180,7 @@ enum class TimeOfTheDay {
 }
 
 data class ShadingParams(
-    val ks: Float = .6f,
+    val ks: Float = .1f,
     val kd: Float = .8f,
-    val m: Int = 8,
+    val m: Int = 1,
 )
