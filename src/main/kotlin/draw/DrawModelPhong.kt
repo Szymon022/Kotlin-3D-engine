@@ -25,7 +25,7 @@ fun drawModelPhong(
     light: Float3,
     camera: Camera,
 ): Flow<ImageBitmap> = flow {
-    model.faces.asFlow().flatMapMerge { face ->
+    model.faces.asFlow().flatMapMerge(concurrency = 1) { face ->
         toCanvasFaceFlow(
             canvas = bufferedImage,
             face = face,
