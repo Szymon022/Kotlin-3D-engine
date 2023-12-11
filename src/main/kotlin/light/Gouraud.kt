@@ -6,6 +6,7 @@ import culling.ZBuffer
 import data.*
 import draw.moveToAET
 import draw.updateEdges
+import math.minus
 import math.normalize
 import math.plus
 import math.times
@@ -20,7 +21,7 @@ fun BufferedImage.drawTriangleGouraud(
     lightColor: Color,
     objColor: Color,
     light: Float3,
-    observer: Float3,
+    camera: Camera,
 ) {
     val edgeTable = face.toEdgeTable().also { it.sortBy(Edge::yMin) }
     val activeEdgeTable = mutableListOf<Edge>()
@@ -33,9 +34,9 @@ fun BufferedImage.drawTriangleGouraud(
     val divider = (y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3)
 
     val normals = face.normals.map { it.normalize() }
-    val v1Color = lambert(kd, ks, m, lightColor, objColor, light, normals[0], observer)
-    val v2Color = lambert(kd, ks, m, lightColor, objColor, light, normals[1], observer)
-    val v3Color = lambert(kd, ks, m, lightColor, objColor, light, normals[2], observer)
+    val v1Color = lambert(kd, ks, m, lightColor, objColor, light, normals[0], camera.position - vertices[0])
+    val v2Color = lambert(kd, ks, m, lightColor, objColor, light, normals[1], camera.position - vertices[1])
+    val v3Color = lambert(kd, ks, m, lightColor, objColor, light, normals[2], camera.position - vertices[2])
 
     while (!(edgeTable.isEmpty() && activeEdgeTable.isEmpty())) {
         edgeTable.moveToAET(activeEdgeTable, scanline)
